@@ -13,7 +13,7 @@ A TypeScript ORM for SurrealDB with decorators and type safety.
 - 🛡️ Type-safe database operations
 - 🏷️ Decorator-based schema definition
 - 🔄 Automatic table creation
-. > Eventually, when the CLI with migrations will come
+  > Eventually, when the CLI with migrations will come
 - 🔍 Query builder
 - 📘 TypeScript-first approach
 
