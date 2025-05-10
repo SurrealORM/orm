@@ -18,9 +18,7 @@ A TypeScript ORM for SurrealDB with decorators and type safety.
 
 ## 📦 Installation
 
-```bash
-npm install surrealorm
-```
+> Not yet published
 
 ## 🚀 Quick Start
 
