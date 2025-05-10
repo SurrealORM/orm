@@ -1,7 +1,7 @@
 # 🚀 SurrealORM
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SurrealORM/orm/refs/heads/main/assets/surrealorm-full_white.png" alt="SurrealORM Logo" width="800"/>
+  <img src="https://raw.githubusercontent.com/SurrealORM/orm/refs/heads/main/assets/surrealorm_full_white.png" alt="SurrealORM Logo" width="800"/>
 </div>
 
 A TypeScript ORM for SurrealDB with decorators and type safety.
