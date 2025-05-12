@@ -60,7 +60,9 @@ const orm = new SurrealORM({
   username: 'root',
   password: 'root'
 });
-await orm.connect();
+
+// Specify the type of connection or leave blank for root user
+await orm.connect("namespace");
 
 // Create a new user
 const user = new User();

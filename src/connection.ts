@@ -59,10 +59,11 @@ export class SurrealORM {
 
   /**
    * Connect to the SurrealDB instance
+   * @param type - The type of connection to use: 'namespace', 'database', or 'root'
    * @throws Error if connection fails
    * @example
    * ```typescript
-   * await orm.connect();
+   * await orm.connect('namespace');
    * ```
    */
   async connect(type: 'namespace' | 'database' | 'root' = 'root'): Promise<void> {
