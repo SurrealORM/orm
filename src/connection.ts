@@ -65,13 +65,34 @@ export class SurrealORM {
    * await orm.connect();
    * ```
    */
-  async connect(): Promise<void> {
+  async connect(type: 'namespace' | 'database' | 'root' = 'root'): Promise<void> {
     this.client = new Surreal();
     await this.client.connect(this.options.url);
-    await this.client.signin({
-      username: this.options.username || 'root',
-      password: this.options.password || 'root',
-    });
+    switch (type) {
+      case 'namespace':
+        await this.client.signin({
+          username: this.options.username || 'root',
+          password: this.options.password || 'root',
+          namespace: this.options.namespace,
+        });
+        break;
+      case 'database':
+        await this.client.signin({
+          username: this.options.username || 'root',
+          password: this.options.password || 'root',
+          namespace: this.options.namespace,
+          database: this.options.database,
+        });
+        break;
+      case 'root':
+        await this.client.signin({
+          username: this.options.username || 'root',
+          password: this.options.password || 'root',
+        });
+        break;
+      default:
+        throw new Error('Invalid connection type');
+    }
     await this.client.use({
       namespace: this.options.namespace,
       database: this.options.database,

@@ -1,6 +1,6 @@
 {
   "name": "@surrealorm/orm",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "A TypeScript ORM for SurrealDB with decorators and type safety.",
   "main": "dist/index.cjs",
   "types": "dist/index.d.mts",
