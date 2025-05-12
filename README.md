@@ -19,8 +19,19 @@ A TypeScript ORM for SurrealDB with decorators and type safety.
 
 ## 📦 Installation
 
+### Node.js
 ```bash
 npm install @surrealorm/orm
+```
+
+### Bun
+```bash
+bun add @surrealorm/orm
+```
+
+### Deno
+```bash
+deno add npm:@surrealorm/orm
 ```
 
 ## 🚀 Quick Start
