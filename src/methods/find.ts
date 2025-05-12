@@ -71,12 +71,8 @@ export async function findUnique<T extends BaseEntity>(
     table,
     ...params
   };
-
-  console.log('FindUnique Query:', query);
-  console.log('FindUnique Params:', finalParams);
   
   const result = await this.client.query(query, finalParams) as [QueryResult<any>];
-  console.log('FindUnique Result:', result);
 
   if (!result?.[0]?.[0]) {
     return null;
@@ -136,12 +132,8 @@ export async function findMany<T extends BaseEntity>(
     table,
     ...params
   };
-
-  console.log('FindMany Query:', query);
-  console.log('FindMany Params:', finalParams);
   
   const result = await this.client.query(query, finalParams) as [QueryResult<any>];
-  console.log('FindMany Result:', result);
 
   if (!result?.[0]) {
     return [];

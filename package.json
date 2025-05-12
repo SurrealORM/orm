@@ -1,10 +1,10 @@
 {
-  "name": "surrealorm",
-  "version": "0.1.0",
-  "description": "A type-safe SurrealDB ORM with decorator schemas",
-  "main": "./dist/index.cjs",
-  "types": "./dist/index.d.mts",
-  "module": "./dist/index.mjs",
+  "name": "@surrealorm/orm",
+  "version": "1.0.0-alpha.3",
+  "description": "A TypeScript ORM for SurrealDB with decorators and type safety.",
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.mts",
+  "module": "dist/index.mjs",
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -12,12 +12,16 @@
       "require": "./dist/index.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "jest",
     "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build && node -e \"require('fs').copyFileSync('README.npm.md', 'README.md')\""
   },
   "keywords": [
     "surrealdb",
@@ -26,11 +30,20 @@
     "decorators",
     "database"
   ],
-  "author": "",
+  "author": "JustWolf",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JustWolfDev/SurrealORM/orm"
+  },
+  "bugs": {
+    "url": "https://github.com/JustWolfDev/SurrealORM/orm/issues"
+  },
+  "homepage": "https://github.com/JustWolfDev/SurrealORM/orm#readme",
   "dependencies": {
+    "reflect-metadata": "^0.1.13",
     "surrealdb": "^1.3.2",
-    "reflect-metadata": "^0.1.13"
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@swc/core": "^1.4.7",
@@ -47,5 +60,8 @@
   },
   "peerDependencies": {
     "typescript": ">=4.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
-} 
+}

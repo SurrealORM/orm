@@ -1,0 +1,27 @@
+# Include only dist folder
+*
+!dist/
+!dist/**/*
+
+# Exclude source files
+src/
+example/
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+
+# Exclude config files
+tsconfig.json
+tsup.config.ts
+.eslintrc
+.prettierrc
+jest.config.js
+
+# Exclude development files
+.git/
+.github/
+.gitignore
+README.md
+LICENSE
+*.log 
