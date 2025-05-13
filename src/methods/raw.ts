@@ -1,7 +1,7 @@
-import { SurrealORM } from '../connection';
+import type { SurrealORM } from "../connection";
 
 interface QueryResult<T> {
-  result: T;
+	result: T;
 }
 
 /**
@@ -12,14 +12,14 @@ interface QueryResult<T> {
  * @returns The query results
  */
 export async function raw<T = any>(
-  this: SurrealORM,
-  query: string,
-  params?: Record<string, any>
+	this: SurrealORM,
+	query: string,
+	params?: Record<string, any>,
 ): Promise<T> {
-  if (!this.client) {
-    throw new Error('Not connected to SurrealDB');
-  }
+	if (!this.client) {
+		throw new Error("Not connected to SurrealDB");
+	}
 
-  const result = await this.client.query(query, params) as [QueryResult<T>];
-  return result[0].result;
-} 
+	const result = (await this.client.query(query, params)) as [QueryResult<T>];
+	return result[0].result;
+}

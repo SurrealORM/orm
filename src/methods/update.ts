@@ -1,7 +1,7 @@
-import { RecordId } from 'surrealdb';
-import { BaseEntity } from '../entity';
-import { SurrealRecord } from '../types';
-import { SurrealORM } from '../connection';
+import { RecordId } from "surrealdb";
+import type { BaseEntity } from "../entity";
+import type { SurrealRecord } from "../types";
+import type { SurrealORM } from "../connection";
 
 /**
  * Update an existing record
@@ -11,19 +11,25 @@ import { SurrealORM } from '../connection';
  * @throws Error if entity has no ID
  */
 export async function update<T extends BaseEntity>(
-  this: SurrealORM,
-  entity: T
+	this: SurrealORM,
+	entity: T,
 ): Promise<T> {
-  if (!this.client) {
-    throw new Error('Not connected to SurrealDB');
-  }
+	if (!this.client) {
+		throw new Error("Not connected to SurrealDB");
+	}
 
-  if (!entity.id) {
-    throw new Error('Cannot update entity without ID');
-  }
+	if (!entity.id) {
+		throw new Error("Cannot update entity without ID");
+	}
 
-  const tableName = (entity.constructor as typeof BaseEntity).getTableName();
-  const recordId = typeof entity.id === 'string' ? new RecordId(tableName, entity.id) : entity.id;
-  const result = await this.client.update(recordId, entity.toJSON()) as unknown as SurrealRecord;
-  return Object.assign(entity, result);
-} 
+	const tableName = (entity.constructor as typeof BaseEntity).getTableName();
+	const recordId =
+		typeof entity.id === "string"
+			? new RecordId(tableName, entity.id)
+			: entity.id;
+	const result = (await this.client.update(
+		recordId,
+		entity.toJSON(),
+	)) as unknown as SurrealRecord;
+	return Object.assign(entity, result);
+}

@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
+  target: 'esnext',
   dts: {
     resolve: true,
     entry: 'src/index.ts',
@@ -17,8 +18,5 @@ export default defineConfig({
     return {
       js: `.${format === 'esm' ? 'mjs' : 'cjs'}`,
     };
-  },
-  esbuildOptions(options) {
-    options.target = 'es2020';
-  },
+  }
 }); 

@@ -1,8 +1,8 @@
-import { BaseEntity } from '../entity';
-import { EntityClass, FindUniqueWhere, FindManyWhere } from '../types';
-import { SurrealORM } from '../connection';
-import { PROPERTY_METADATA_KEY } from '../decorators';
-import { RecordId } from 'surrealdb';
+import type { BaseEntity } from "../entity";
+import type { EntityClass, FindUniqueWhere, FindManyWhere } from "../types";
+import type { SurrealORM } from "../connection";
+import { PROPERTY_METADATA_KEY } from "../decorators";
+import { RecordId } from "surrealdb";
 
 /**
  * Interface for query results from SurrealDB
@@ -20,68 +20,75 @@ type QueryResult<T> = T[];
  * @throws Error if not connected to SurrealDB or if fields are not unique
  */
 export async function findUnique<T extends BaseEntity>(
-  this: SurrealORM,
-  entityClass: EntityClass<T>,
-  where: FindUniqueWhere<T>
+	this: SurrealORM,
+	entityClass: EntityClass<T>,
+	where: FindUniqueWhere<T>,
 ): Promise<T | null> {
-  if (!this.client) {
-    throw new Error('Not connected to SurrealDB');
-  }
+	if (!this.client) {
+		throw new Error("Not connected to SurrealDB");
+	}
 
-  // Check if all fields in where clause are marked as unique
-  const properties = Reflect.getMetadata(PROPERTY_METADATA_KEY, entityClass) || {};
-  const whereFields = Object.keys(where);
-  
-  for (const field of whereFields) {
-    // Skip id field as it's always unique in SurrealDB
-    if (field === 'id') continue;
-    
-    if (!properties[field]?.unique) {
-      throw new Error(`Field ${field} is not marked as unique. Only fields decorated with @Property({ unique: true }) can be used with findUnique.`);
-    }
-  }
+	// Check if all fields in where clause are marked as unique
+	const properties =
+		Reflect.getMetadata(PROPERTY_METADATA_KEY, entityClass) || {};
+	const whereFields = Object.keys(where);
 
-  const table = entityClass.getTableName();
-  const conditions = whereFields.map(field => {
-    if (field === 'id') {
-      return 'id = type::thing($table, $id)';
-    }
-    return `${field} = $${field}`;
-  }).join(' AND ');
-  
-  const query = `SELECT * FROM ${table} WHERE ${conditions} LIMIT 1`;
-  
-  // Create params object with field names as keys
-  const params = Object.fromEntries(
-    whereFields.map(field => {
-      const value = where[field as keyof T];
-      if (field === 'id') {
-        // Convert RecordId to string if needed
-        if (value instanceof RecordId) {
-          return [field, value.id];
-        }
-        return [field, value];
-      }
-      return [field, value];
-    })
-  );
+	for (const field of whereFields) {
+		// Skip id field as it's always unique in SurrealDB
+		if (field === "id") continue;
 
-  // Add table name to params
-  const finalParams = {
-    table,
-    ...params
-  };
-  
-  const result = await this.client.query(query, finalParams) as [QueryResult<any>];
+		if (!properties[field]?.unique) {
+			throw new Error(
+				`Field ${field} is not marked as unique. Only fields decorated with @Property({ unique: true }) can be used with findUnique.`,
+			);
+		}
+	}
 
-  if (!result?.[0]?.[0]) {
-    return null;
-  }
+	const table = entityClass.getTableName();
+	const conditions = whereFields
+		.map((field) => {
+			if (field === "id") {
+				return "id = type::thing($table, $id)";
+			}
+			return `${field} = $${field}`;
+		})
+		.join(" AND ");
 
-  const record = result[0][0];
-  const entity = new entityClass();
-  Object.assign(entity, record);
-  return entity as T;
+	const query = `SELECT * FROM ${table} WHERE ${conditions} LIMIT 1`;
+
+	// Create params object with field names as keys
+	const params = Object.fromEntries(
+		whereFields.map((field) => {
+			const value = where[field as keyof T];
+			if (field === "id") {
+				// Convert RecordId to string if needed
+				if (value instanceof RecordId) {
+					return [field, value.id];
+				}
+				return [field, value];
+			}
+			return [field, value];
+		}),
+	);
+
+	// Add table name to params
+	const finalParams = {
+		table,
+		...params,
+	};
+
+	const result = (await this.client.query(query, finalParams)) as [
+		QueryResult<any>,
+	];
+
+	if (!result?.[0]?.[0]) {
+		return null;
+	}
+
+	const record = result[0][0];
+	const entity = new entityClass();
+	Object.assign(entity, record);
+	return entity as T;
 }
 
 /**
@@ -93,57 +100,61 @@ export async function findUnique<T extends BaseEntity>(
  * @throws Error if not connected to SurrealDB
  */
 export async function findMany<T extends BaseEntity>(
-  this: SurrealORM,
-  entityClass: EntityClass<T>,
-  where: FindManyWhere<T>
+	this: SurrealORM,
+	entityClass: EntityClass<T>,
+	where: FindManyWhere<T>,
 ): Promise<T[]> {
-  if (!this.client) {
-    throw new Error('Not connected to SurrealDB');
-  }
+	if (!this.client) {
+		throw new Error("Not connected to SurrealDB");
+	}
 
-  const table = entityClass.getTableName();
-  const whereFields = Object.keys(where);
-  const conditions = whereFields.map(field => {
-    if (field === 'id') {
-      return 'id = type::thing($table, $id)';
-    }
-    return `${field} = $${field}`;
-  }).join(' AND ');
-  
-  const query = `SELECT * FROM ${table} WHERE ${conditions}`;
-  
-  // Create params object with field names as keys
-  const params = Object.fromEntries(
-    whereFields.map(field => {
-      const value = where[field as keyof T];
-      if (field === 'id') {
-        // Convert RecordId to string if needed
-        if (value instanceof RecordId) {
-          return [field, value.id];
-        }
-        return [field, value];
-      }
-      return [field, value];
-    })
-  );
+	const table = entityClass.getTableName();
+	const whereFields = Object.keys(where);
+	const conditions = whereFields
+		.map((field) => {
+			if (field === "id") {
+				return "id = type::thing($table, $id)";
+			}
+			return `${field} = $${field}`;
+		})
+		.join(" AND ");
 
-  // Add table name to params
-  const finalParams = {
-    table,
-    ...params
-  };
-  
-  const result = await this.client.query(query, finalParams) as [QueryResult<any>];
+	const query = `SELECT * FROM ${table} WHERE ${conditions}`;
 
-  if (!result?.[0]) {
-    return [];
-  }
+	// Create params object with field names as keys
+	const params = Object.fromEntries(
+		whereFields.map((field) => {
+			const value = where[field as keyof T];
+			if (field === "id") {
+				// Convert RecordId to string if needed
+				if (value instanceof RecordId) {
+					return [field, value.id];
+				}
+				return [field, value];
+			}
+			return [field, value];
+		}),
+	);
 
-  return result[0].map((record: any) => {
-    const entity = new entityClass();
-    Object.assign(entity, record);
-    return entity;
-  });
+	// Add table name to params
+	const finalParams = {
+		table,
+		...params,
+	};
+
+	const result = (await this.client.query(query, finalParams)) as [
+		QueryResult<any>,
+	];
+
+	if (!result?.[0]) {
+		return [];
+	}
+
+	return result[0].map((record: any) => {
+		const entity = new entityClass();
+		Object.assign(entity, record);
+		return entity;
+	});
 }
 
 /**
@@ -154,24 +165,24 @@ export async function findMany<T extends BaseEntity>(
  * @throws Error if not connected to SurrealDB
  */
 export async function findAll<T extends BaseEntity>(
-  this: SurrealORM,
-  entityClass: EntityClass<T>
+	this: SurrealORM,
+	entityClass: EntityClass<T>,
 ): Promise<T[]> {
-  if (!this.client) {
-    throw new Error('Not connected to SurrealDB');
-  }
+	if (!this.client) {
+		throw new Error("Not connected to SurrealDB");
+	}
 
-  const table = entityClass.getTableName();
-  const query = `SELECT * FROM ${table}`;
-  const result = await this.client.query(query) as [QueryResult<any>];
+	const table = entityClass.getTableName();
+	const query = `SELECT * FROM ${table}`;
+	const result = (await this.client.query(query)) as [QueryResult<any>];
 
-  if (!result?.[0]) {
-    return [];
-  }
+	if (!result?.[0]) {
+		return [];
+	}
 
-  return result[0].map((record: any) => {
-    const entity = new entityClass();
-    Object.assign(entity, record);
-    return entity;
-  });
-} 
+	return result[0].map((record: any) => {
+		const entity = new entityClass();
+		Object.assign(entity, record);
+		return entity;
+	});
+}

@@ -1,5 +1,5 @@
-import { BaseEntity } from '../entity';
-import { SurrealORM } from '../connection';
+import type { BaseEntity } from "../entity";
+import type { SurrealORM } from "../connection";
 
 /**
  * Delete a record from the database
@@ -8,16 +8,16 @@ import { SurrealORM } from '../connection';
  * @throws Error if entity has no ID
  */
 export async function delete_<T extends BaseEntity>(
-  this: SurrealORM,
-  entity: T
+	this: SurrealORM,
+	entity: T,
 ): Promise<void> {
-  if (!this.client) {
-    throw new Error('Not connected to SurrealDB');
-  }
+	if (!this.client) {
+		throw new Error("Not connected to SurrealDB");
+	}
 
-  if (!entity.id) {
-    throw new Error('Cannot delete entity without ID');
-  }
+	if (!entity.id) {
+		throw new Error("Cannot delete entity without ID");
+	}
 
-  await this.client.delete(entity.id);
-} 
+	await this.client.delete(entity.id);
+}

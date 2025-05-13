@@ -1,21 +1,21 @@
-import { RecordId } from 'surrealdb';
-import { BaseEntity } from './entity';
+import type { RecordId } from "surrealdb";
+import type { BaseEntity } from "./entity";
 
 /**
  * Options for configuring the SurrealORM connection
  * @interface SurrealORMOptions
  */
 export interface SurrealORMOptions {
-  /** The URL of the SurrealDB instance */
-  url: string;
-  /** The namespace to use */
-  namespace: string;
-  /** The database to use */
-  database: string;
-  /** Optional username for authentication */
-  username?: string;
-  /** Optional password for authentication */
-  password?: string;
+	/** The URL of the SurrealDB instance */
+	url: string;
+	/** The namespace to use */
+	namespace: string;
+	/** The database to use */
+	database: string;
+	/** Optional username for authentication */
+	username?: string;
+	/** Optional password for authentication */
+	password?: string;
 }
 
 /**
@@ -23,10 +23,10 @@ export interface SurrealORMOptions {
  * @interface SurrealRecord
  */
 export interface SurrealRecord {
-  /** The record ID */
-  id: RecordId<string>;
-  /** Additional record properties */
-  [key: string]: any;
+	/** The record ID */
+	id: RecordId<string>;
+	/** Additional record properties */
+	[key: string]: any;
 }
 
 /**
@@ -35,7 +35,7 @@ export interface SurrealRecord {
  * @returns Union type of all non-function property keys
  */
 export type EntityFields<T extends BaseEntity> = {
-  [K in keyof T]: T[K] extends Function ? never : K;
+	[K in keyof T]: T[K] extends (...args: any[]) => any ? never : K;
 }[keyof T];
 
 /**
@@ -51,7 +51,9 @@ export type FieldValue<T extends BaseEntity, K extends EntityFields<T>> = T[K];
  * @template T - The entity type extending BaseEntity
  * @returns A constructor type that creates instances of T
  */
-export type EntityClass<T extends BaseEntity> = { new(): T } & typeof BaseEntity;
+export type EntityClass<T extends BaseEntity> = {
+	new (): T;
+} & typeof BaseEntity;
 
 /**
  * Type to get only unique fields from an entity
@@ -65,7 +67,7 @@ export type UniqueFields<T extends BaseEntity> = Extract<keyof T, string>;
  * @template T - The entity type extending BaseEntity
  */
 export type FindUniqueWhere<T extends BaseEntity> = {
-  [K in keyof T]?: T[K];
+	[K in keyof T]?: T[K];
 };
 
 /**
@@ -73,5 +75,5 @@ export type FindUniqueWhere<T extends BaseEntity> = {
  * @template T - The entity type extending BaseEntity
  */
 export type FindManyWhere<T extends BaseEntity> = {
-  [K in keyof T]?: T[K];
-}; 
+	[K in keyof T]?: T[K];
+};
