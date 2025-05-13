@@ -14,16 +14,15 @@ Key Features:
 - 📘 TypeScript-first approach
 
 Installation:
-npm: npm install @surrealorm/orm
-bun: bun add @surrealorm/orm
-deno: deno add npm:@surrealorm/orm
+- npm: npm install @surrealorm/orm
+- bun: bunx jsr add @surrealorm/orm
+- deno: deno add jsr:@surrealorm/orm
 
 This initial release provides a solid foundation for working with SurrealDB in TypeScript, featuring:
 - Entity definition with decorators
 - CRUD operations with type safety
 - Query building capabilities
 - Support for unique constraints
-- Automatic table creation
 
 Documentation and examples are available in the README. We welcome contributions and feedback!
 
