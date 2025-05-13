@@ -1,15 +1,10 @@
 {
-    "name": "@surrealorm/orm",
-    "version": "1.0.0-alpha.7",
-    "description": "A TypeScript ORM for SurrealDB with decorators and type safety.",
-    "license": "MIT",
-    "exports": "./mod.ts",
-    "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "mod.ts",
-            "src"
-        ]
-    }
+	"name": "@surrealorm/orm",
+	"version": "1.0.0",
+	"description": "A TypeScript ORM for SurrealDB with decorators and type safety.",
+	"license": "MIT",
+	"exports": "./mod.ts",
+	"publish": {
+		"include": ["LICENSE", "README.md", "mod.ts", "src"]
+	}
 }

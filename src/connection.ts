@@ -204,7 +204,7 @@ export class SurrealORM {
 	 * ```
 	 */
 	findAll = findAll.bind(this) as <T extends BaseEntity>(
-		entityClass: EntityClass<T>
+		entityClass: EntityClass<T>,
 	) => Promise<T[]>;
 
 	/**
@@ -235,7 +235,9 @@ export class SurrealORM {
 	 * }
 	 * ```
 	 */
-	delete = delete_.bind(this) as <T extends BaseEntity>(entity: T) => Promise<void>;
+	delete = delete_.bind(this) as <T extends BaseEntity>(
+		entity: T,
+	) => Promise<void>;
 
 	/**
 	 * Execute a raw query
@@ -248,7 +250,10 @@ export class SurrealORM {
 	 * const result = await orm.raw('SELECT * FROM user WHERE age > $age', { age: 30 });
 	 * ```
 	 */
-	raw = raw.bind(this) as <T = any>(query: string, params?: Record<string, any>) => Promise<T[]>;
+	raw = raw.bind(this) as <T = any>(
+		query: string,
+		params?: Record<string, any>,
+	) => Promise<T[]>;
 
 	/**
 	 * Create or update a record based on unique fields

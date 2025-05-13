@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
 /**
  * Get metadata for a target
@@ -8,11 +8,11 @@ import 'reflect-metadata';
  * @returns The metadata value
  */
 export function getMetadata(
-  key: any,
-  target: any,
-  propertyKey?: string | symbol
+	key: any,
+	target: any,
+	propertyKey?: string | symbol,
 ): any {
-  return Reflect.getMetadata(key, target, propertyKey);
+	return Reflect.getMetadata(key, target, propertyKey);
 }
 
 /**
@@ -23,10 +23,10 @@ export function getMetadata(
  * @param propertyKey - Optional property key
  */
 export function defineMetadata(
-  key: any,
-  value: any,
-  target: any,
-  propertyKey?: string | symbol
+	key: any,
+	value: any,
+	target: any,
+	propertyKey?: string | symbol,
 ): void {
-  Reflect.defineMetadata(key, value, target, propertyKey);
-} 
+	Reflect.defineMetadata(key, value, target, propertyKey);
+}

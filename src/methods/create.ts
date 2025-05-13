@@ -17,7 +17,10 @@ export async function create<T extends BaseEntity>(
 	}
 
 	const table = (entity.constructor as typeof BaseEntity).getTableName();
-	const result = await this.client.create(table, entity.toJSON()) as SurrealRecord[];
+	const result = (await this.client.create(
+		table,
+		entity.toJSON(),
+	)) as SurrealRecord[];
 	const record = result[0];
 	if (!record) {
 		throw new Error("Failed to create record");

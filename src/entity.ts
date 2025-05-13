@@ -1,6 +1,6 @@
 import { ENTITY_METADATA_KEY, PROPERTY_METADATA_KEY } from "./decorators";
 import type { RecordId } from "surrealdb";
-import { getMetadata } from './metadata';
+import { getMetadata } from "./metadata";
 
 /**
  * Base class for all entities in the ORM

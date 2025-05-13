@@ -1,4 +1,4 @@
-import { getMetadata, defineMetadata } from './metadata';
+import { getMetadata, defineMetadata } from "./metadata";
 
 /**
  * Metadata key for entity decorator
@@ -65,19 +65,11 @@ export function Property(options: PropertyOptions = {}): PropertyDecorator {
 		properties[propertyKey.toString()] = {
 			type:
 				options.type ||
-				getMetadata(
-					"design:type",
-					target,
-					propertyKey,
-				)?.name?.toLowerCase(),
+				getMetadata("design:type", target, propertyKey)?.name?.toLowerCase(),
 			required: options.required ?? false,
 			unique: options.unique ?? false,
 			index: options.index ?? false,
 		};
-		defineMetadata(
-			PROPERTY_METADATA_KEY,
-			properties,
-			target.constructor,
-		);
+		defineMetadata(PROPERTY_METADATA_KEY, properties, target.constructor);
 	};
 }
