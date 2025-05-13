@@ -31,7 +31,7 @@ bun add @surrealorm/orm
 
 ### Deno
 ```bash
-deno add npm:@surrealorm/orm
+deno add jsr:@surrealorm/orm
 ```
 
 ## 🚀 Quick Start
