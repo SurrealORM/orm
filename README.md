@@ -174,6 +174,53 @@ const allUsers = await orm.findAll(User);
 - `@Property({ required: true })` - Required property
 - `@Property({ type: 'string' })` - Type specification
 
+## 🧪 Testing
+
+To run the tests for SurrealORM, you'll need a running SurrealDB instance with proper permissions.
+
+### Testing Requirements
+
+1. **SurrealDB Server**: Make sure you have a SurrealDB server running (default: http://localhost:8000)
+2. **Root Access**: The tests require root access to create tables and define schemas
+3. **Environment Setup**: You can configure the database connection using environment variables:
+   - `SURREAL_URL` - Database URL (default: http://localhost:8000/rpc)
+   - `SURREAL_NAMESPACE` - Namespace for testing (default: test)
+   - `SURREAL_DATABASE` - Database name for testing (default: test)
+   - `SURREAL_USERNAME` - Username (default: root)
+   - `SURREAL_PASSWORD` - Password (default: root)
+
+### Running Tests
+
+```bash
+# Start SurrealDB (if not already running)
+# Using npm script
+npm run test:db:start
+
+# Or using platform-specific scripts
+npm run test:db:start:win  # Windows
+npm run test:db:start:unix # Unix/macOS
+
+# Run tests
+npm test
+
+# Run specific test file
+npm test -- test/unit/entity.test.ts
+```
+
+### Test Database Scripts
+
+The package includes several scripts to help start the test database:
+
+- `test:db:start`: Starts SurrealDB with default settings (memory mode)
+- `test:db:start:win`: Windows-specific script to start the test database
+- `test:db:start:unix`: Unix/macOS script to start the test database
+
+These scripts ensure the database is running with the correct configuration for testing:
+- Memory mode for clean state
+- Root user access
+- Trace-level logging for debugging
+- Default port (8000)
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
