@@ -25,9 +25,10 @@ import type { BaseEntity } from "./entity";
  */
 export class SurrealORM {
 	/** The SurrealDB client instance */
-	protected client: Surreal | null = null;
+	protected client: Surreal | null;
 	/** The connection options */
-	private options: SurrealORMOptions;
+	public readonly options: SurrealORMOptions;
+	public readonly database: string;
 
 	/**
 	 * Main SurrealORM class for database operations
@@ -59,7 +60,9 @@ export class SurrealORM {
 	 * @param options.password - Password for authentication (defaults to 'root')
 	 */
 	constructor(options: SurrealORMOptions) {
+		this.client = new Surreal();
 		this.options = options;
+		this.database = options.database;
 	}
 
 	/**
@@ -74,37 +77,53 @@ export class SurrealORM {
 	async connect(
 		type: "namespace" | "database" | "root" = "root",
 	): Promise<void> {
-		this.client = new Surreal();
-		await this.client.connect(this.options.url);
-		switch (type) {
-			case "namespace":
-				await this.client.signin({
-					username: this.options.username || "root",
-					password: this.options.password || "root",
-					namespace: this.options.namespace,
-				});
-				break;
-			case "database":
-				await this.client.signin({
-					username: this.options.username || "root",
-					password: this.options.password || "root",
-					namespace: this.options.namespace,
-					database: this.options.database,
-				});
-				break;
-			case "root":
-				await this.client.signin({
-					username: this.options.username || "root",
-					password: this.options.password || "root",
-				});
-				break;
-			default:
-				throw new Error("Invalid connection type");
+		try {
+			this.client = new Surreal();
+			
+			// Ensure the client is connected
+			await this.client.connect(this.options.url);
+			
+			// Handle authentication based on connection type
+			switch (type) {
+				case "namespace":
+					await this.client.signin({
+						username: this.options.username || "root",
+						password: this.options.password || "root",
+						namespace: this.options.namespace,
+					});
+					break;
+				case "database":
+					await this.client.signin({
+						username: this.options.username || "root",
+						password: this.options.password || "root",
+						namespace: this.options.namespace,
+						database: this.options.database,
+					});
+					break;
+				case "root":
+					await this.client.signin({
+						username: this.options.username || "root",
+						password: this.options.password || "root",
+					});
+					break;
+				default:
+					throw new Error("Invalid connection type");
+			}
+			
+			// Make sure client exists before using it
+			if (!this.client) {
+				throw new Error("SurrealDB client not initialized");
+			}
+
+			// Set namespace and database
+			await this.client.use({
+				namespace: this.options.namespace,
+				database: this.options.database,
+			});
+		} catch (error) {
+			this.client = null;
+			throw new Error(`Failed to connect to SurrealDB: ${error instanceof Error ? error.message : String(error)}`);
 		}
-		await this.client.use({
-			namespace: this.options.namespace,
-			database: this.options.database,
-		});
 	}
 
 	/**
@@ -134,9 +153,13 @@ export class SurrealORM {
 	 */
 	async isConnected(): Promise<boolean> {
 		try {
-			await this.client?.ping();
+			if (!this.client) {
+				return false;
+			}
+			await this.client.ping();
 			return true;
 		} catch (error) {
+			this.client = null;
 			return false;
 		}
 	}
@@ -162,82 +185,53 @@ export class SurrealORM {
 	 * @param where - The where clause containing unique field values
 	 * @returns The found entity or null if not found
 	 * @throws Error if not connected to SurrealDB or if fields are not unique
-	 * @example
-	 * ```typescript
-	 * const user = await orm.findUnique(User, { email: 'john@example.com' });
-	 * if (user) {
-	 *   console.log('Found user:', user.name);
-	 * }
-	 * ```
 	 */
 	findUnique = findUnique.bind(this) as <T extends BaseEntity>(
 		entityClass: EntityClass<T>,
-		where: FindUniqueWhere<T>,
+		where: FindUniqueWhere<T>
 	) => Promise<T | null>;
 
 	/**
-	 * Find multiple records by field values
+	 * Find multiple records by where clause
 	 * @param entityClass - The entity class to find
-	 * @param where - The where clause containing field values
-	 * @returns Array of found entities
+	 * @param where - The where clause to filter records
+	 * @returns An array of found entities
 	 * @throws Error if not connected to SurrealDB
-	 * @example
-	 * ```typescript
-	 * const users = await orm.findMany(User, { age: 30, role: 'admin' });
-	 * console.log('Found users:', users.length);
-	 * ```
 	 */
 	findMany = findMany.bind(this) as <T extends BaseEntity>(
 		entityClass: EntityClass<T>,
-		where: FindManyWhere<T>,
+		where: FindManyWhere<T>
 	) => Promise<T[]>;
 
 	/**
-	 * Find all records of an entity type
+	 * Find all records of a given entity class
 	 * @param entityClass - The entity class to find
-	 * @returns Array of all entities
+	 * @returns An array of all found entities
 	 * @throws Error if not connected to SurrealDB
-	 * @example
-	 * ```typescript
-	 * const allUsers = await orm.findAll(User);
-	 * console.log('Total users:', allUsers.length);
-	 * ```
 	 */
 	findAll = findAll.bind(this) as <T extends BaseEntity>(
-		entityClass: EntityClass<T>,
+		entityClass: EntityClass<T>
 	) => Promise<T[]>;
 
 	/**
-	 * Update an existing record
+	 * Update a record
 	 * @param entity - The entity to update
 	 * @returns The updated entity
 	 * @throws Error if not connected to SurrealDB
-	 * @example
-	 * ```typescript
-	 * const user = await orm.findUnique(User, 'email', 'john@example.com');
-	 * if (user) {
-	 *   user.age = 31;
-	 *   const updatedUser = await orm.update(user);
-	 * }
-	 * ```
 	 */
-	update = update.bind(this) as <T extends BaseEntity>(entity: T) => Promise<T>;
+	update = update.bind(this) as <T extends BaseEntity>(
+		entity: T
+	) => Promise<T>;
 
 	/**
 	 * Delete a record
 	 * @param entity - The entity to delete
+	 * @returns The deleted entity
 	 * @throws Error if not connected to SurrealDB
-	 * @example
-	 * ```typescript
-	 * const user = await orm.findUnique(User, 'email', 'john@example.com');
-	 * if (user) {
-	 *   await orm.delete(user);
-	 * }
-	 * ```
 	 */
 	delete = delete_.bind(this) as <T extends BaseEntity>(
-		entity: T,
-	) => Promise<void>;
+		entity: T
+	) => Promise<T>;
 
 	/**
 	 * Execute a raw query
@@ -245,29 +239,19 @@ export class SurrealORM {
 	 * @param params - Optional parameters for the query
 	 * @returns The query result
 	 * @throws Error if not connected to SurrealDB
-	 * @example
-	 * ```typescript
-	 * const result = await orm.raw('SELECT * FROM user WHERE age > $age', { age: 30 });
-	 * ```
 	 */
-	raw = raw.bind(this) as <T = any>(
-		query: string,
-		params?: Record<string, any>,
-	) => Promise<T[]>;
+	async raw<T = any>(query: string, params?: Record<string, any>): Promise<T[]> {
+		if (!this.client) {
+			throw new Error('Not connected to SurrealDB');
+		}
+		return await this.client.query(query, params);
+	}
 
 	/**
-	 * Create or update a record based on unique fields
-	 * @param entity - The entity to create or update
-	 * @param uniqueFields - The unique fields to check for existing records
-	 * @returns The created or updated entity
+	 * Upsert a record
+	 * @param entity - The entity to upsert
+	 * @returns The upserted entity
 	 * @throws Error if not connected to SurrealDB
-	 * @example
-	 * ```typescript
-	 * const user = new User();
-	 * user.name = 'John Doe';
-	 * user.email = 'john@example.com';
-	 * const result = await orm.upsert(user, 'email');
-	 * ```
 	 */
 	upsert = upsert.bind(this) as <T extends BaseEntity>(
 		entity: T,
