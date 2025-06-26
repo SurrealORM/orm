@@ -1,4 +1,4 @@
-name: Open Release PR (Stable & RC)
+name: Open Release PR
 on:
   push:
     branches:
