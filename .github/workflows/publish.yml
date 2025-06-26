@@ -3,7 +3,7 @@ name: Publish to NPM and JSR
 
 on:
   release:
-    types: [published]
+    types: [prereleased, released]
 
 jobs:
   publish:
@@ -24,10 +24,22 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Publish to NPM
+      - name: Publish to NPM (Stable)
+        if: github.event.action == 'released'
         run: bun run publish:npm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish to JSR
+      - name: Publish to NPM (Prerelease)
+        if: github.event.action == 'prereleased'
+        run: bun run publish:npm:beta
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to JSR (Stable)
+        if: github.event.action == 'released'
         run: bun run publish:jsr
+
+      - name: Publish to JSR (Prerelease)  
+        if: github.event.action == 'prereleased'
+        run: bun run publish:jsr:beta

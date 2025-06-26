@@ -35,8 +35,10 @@
 		"format": "bunx biome format .",
 		"format:fix": "bunx biome format --write .",
 		"publish:npm": "bunx npm publish",
+		"publish:npm:beta": "bunx npm publish --tag=beta",
 		"publish:npm:dry": "bunx npm publish --dry-run",
 		"publish:jsr": "bunx jsr publish",
+		"publish:jsr:beta": "bunx jsr publish --tag=beta",
 		"publish:jsr:dry": "bunx jsr publish --dry-run",
 		"prepublishOnly": "bun run build && bun -e \"const fs=require('fs'); fs.renameSync('README.md', 'README.github.md'); fs.renameSync('README.npm.md', 'README.md');\"",
 		"postpublish": "bun -e \"const fs=require('fs'); fs.renameSync('README.md', 'README.npm.md'); fs.renameSync('README.github.md', 'README.md');\""

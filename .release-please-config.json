@@ -7,7 +7,8 @@
 		{
 			"branch": "dev",
 			"releaseType": "node",
-			"prerelease": true
+			"prerelease": true,
+			"prerelease-type": "rc"
 		}
 	]
 }
