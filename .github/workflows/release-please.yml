@@ -19,8 +19,8 @@ jobs:
             echo "config_file=.release-please-config-main.json" >> $GITHUB_OUTPUT
             echo "manifest_file=.release-please-manifest-main.json" >> $GITHUB_OUTPUT
           elif [ "${{ github.ref_name }}" = "dev" ]; then
-            echo "config_file=.release-please-config-dev.json" >> $GITHUB_OUTPUT
-            echo "manifest_file=.release-please-manifest-dev.json" >> $GITHUB_OUTPUT
+            echo "config_file=.release-please-config-rc.json" >> $GITHUB_OUTPUT
+            echo "manifest_file=.release-please-manifest-rc.json" >> $GITHUB_OUTPUT
           fi
       
       - uses: googleapis/release-please-action@v4
