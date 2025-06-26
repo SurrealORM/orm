@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      issues: read
+      issues: write
 
     steps:
       - uses: googleapis/release-please-action@v4
