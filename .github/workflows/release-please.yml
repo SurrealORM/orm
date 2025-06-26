@@ -1,0 +1,30 @@
+name: Open Release PR (Stable & RC)
+on:
+  push:
+    branches:
+      - main
+      - dev
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set config based on branch
+        id: config
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "config_file=.release-please-config-main.json" >> $GITHUB_OUTPUT
+            echo "manifest_file=.release-please-manifest-main.json" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_name }}" = "dev" ]; then
+            echo "config_file=.release-please-config-dev.json" >> $GITHUB_OUTPUT
+            echo "manifest_file=.release-please-manifest-dev.json" >> $GITHUB_OUTPUT
+          fi
+      
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: ${{ steps.config.outputs.config_file }}
+          manifest-file: ${{ steps.config.outputs.manifest_file }} 
