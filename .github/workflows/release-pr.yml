@@ -1,4 +1,4 @@
-name: Prepare Release (Stable & RC)
+name: Prepare Release PR (Stable & RC)
 
 on:
   push:
