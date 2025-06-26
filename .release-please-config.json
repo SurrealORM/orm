@@ -1,0 +1,13 @@
+{
+	"branches": [
+		{
+			"branch": "main",
+			"releaseType": "node"
+		},
+		{
+			"branch": "dev",
+			"releaseType": "node",
+			"prerelease": true
+		}
+	]
+}

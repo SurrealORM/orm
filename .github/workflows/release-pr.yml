@@ -1,0 +1,22 @@
+name: Prepare Release (Stable & RC)
+
+on:
+  push:
+    branches:
+      - main
+      - 'dev'
+
+jobs:
+  release-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: node
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
